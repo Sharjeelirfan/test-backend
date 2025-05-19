@@ -9,12 +9,19 @@ import { PrismaClient } from "@prisma/client";
 dotenv.config();
 const prisma = new PrismaClient();
 const app = express();
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: function (origin, callback) {
+    const allowedOrigins = ["http://localhost:3000"];
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
+
+app.options("*", cors());
 app.use(express.json());
 
 const JWT_SECRET = process.env.JWT_SECRET;
