@@ -11,7 +11,7 @@ const prisma = new PrismaClient();
 const app = express();
 app.use(cors({
   origin: function (origin, callback) {
-    const allowedOrigins = ["http://localhost:3000"];
+    const allowedOrigins = ["https://notes-task-frontend-ma7b.vercel.app/"];
     if (allowedOrigins.includes(origin) || !origin) {
       callback(null, true);
     } else {
