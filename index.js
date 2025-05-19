@@ -13,7 +13,7 @@ app.use(
   cors({
     origin: "*",
     credentials: true,
-    })
+  })
 );
 app.use(express.json());
 
@@ -24,6 +24,10 @@ const JWT_SECRET = process.env.JWT_SECRET;
 //   max: 5,
 //   message: "Too many login attempts, please try again later.",
 // });
+
+app.get("/", (req, res) => {
+  res.send("Hello from API");
+});
 
 // Register Route
 app.post("/register", async (req, res) => {
