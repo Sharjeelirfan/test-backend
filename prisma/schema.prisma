@@ -1,0 +1,53 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DatabaseURL") 
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(USER)
+  notes     Note[]
+  createdAt DateTime @default(now())
+}
+
+model Note {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  visibility  Visibility @default(PRIVATE)
+  tags        String[]
+  archived    Boolean   @default(false)
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  versions    Version[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Version {
+  id        Int      @id @default(autoincrement())
+  content   String
+  note      Note     @relation(fields: [noteId], references: [id])
+  noteId    Int
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+  CUSTOM
+}
