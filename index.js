@@ -12,7 +12,7 @@ const app = express();
 app.use(cors({}));
 app.use(express.json());
 
-const JWT_SECRET = process.env.NEXT_PUBLIC_JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // const loginLimiter = rateLimit({
 //   windowMs: 15 * 60 * 1000,
@@ -73,10 +73,10 @@ app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   // console.log(email, password);
   try {
-    console.log("kuch bi");
+    // console.log("kuch bi");
 
     const user = await prisma.user.findUnique({ where: { email } });
-    console.log(user, "abcd");
+    // console.log(user, "abcd");
 
     if (!user) return res.status(401).json({ error: "Invalid credentials" });
 
@@ -96,7 +96,7 @@ app.post("/login", async (req, res) => {
       }
     );
 
-    console.log(token);
+    // console.log(token);
 
     const refreshToken = jwt.sign({ userId: user.id }, JWT_SECRET, {
       expiresIn: "7d",
