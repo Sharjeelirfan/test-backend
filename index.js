@@ -12,7 +12,7 @@ const app = express();
 app.use(cors({}));
 app.use(express.json());
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.NEXT_PUBLIC_JWT_SECRET;
 
 // const loginLimiter = rateLimit({
 //   windowMs: 15 * 60 * 1000,
@@ -47,7 +47,7 @@ app.post("/register", async (req, res) => {
         useremail: user.email,
         role: roleUpper,
       },
-      JWT_SECRET,
+      NEXT_PUBLIC_JWT_SECRET,
       {
         expiresIn: "7d",
       }
@@ -84,7 +84,7 @@ app.post("/login", async (req, res) => {
         useremail: user.email,
         role: user.role,
       },
-      JWT_SECRET,
+      NEXT_PUBLIC_JWT_SECRET,
       {
         expiresIn: "7d",
       }
@@ -105,7 +105,7 @@ function authenticateToken(req, res, next) {
   const token = authHeader && authHeader.split(" ")[1];
   if (!token) return res.sendStatus(401);
 
-  jwt.verify(token, JWT_SECRET, (err, user) => {
+  jwt.verify(token, NEXT_PUBLIC_JWT_SECRET, (err, user) => {
     if (err) return res.sendStatus(403);
     // console.log("Decoded user:", user); // check if userId exists
 
@@ -122,12 +122,16 @@ app.post("/refresh-token", async (req, res) => {
     return res.status(401).json({ error: "No refresh token provided" });
 
   try {
-    const payload = jwt.verify(refreshToken, JWT_SECRET);
+    const payload = jwt.verify(refreshToken, NEXT_PUBLIC_JWT_SECRET);
 
     // Generate new access token
-    const newAccessToken = jwt.sign({ userId: payload.userId }, JWT_SECRET, {
-      expiresIn: "15m",
-    });
+    const newAccessToken = jwt.sign(
+      { userId: payload.userId },
+      NEXT_PUBLIC_JWT_SECRET,
+      {
+        expiresIn: "15m",
+      }
+    );
 
     res.json({ accessToken: newAccessToken });
   } catch (err) {
