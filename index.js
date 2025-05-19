@@ -9,12 +9,7 @@ import { PrismaClient } from "@prisma/client";
 dotenv.config();
 const prisma = new PrismaClient();
 const app = express();
-app.use(
-  cors({
-    origin: "*",
-    credentials: true,
-  })
-);
+app.use(cors({}));
 app.use(express.json());
 
 const JWT_SECRET = process.env.JWT_SECRET;
