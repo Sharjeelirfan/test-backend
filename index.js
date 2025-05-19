@@ -47,7 +47,7 @@ app.post("/register", async (req, res) => {
         useremail: user.email,
         role: roleUpper,
       },
-      NEXT_PUBLIC_JWT_SECRET,
+      JWT_SECRET,
       {
         expiresIn: "7d",
       }
@@ -68,10 +68,16 @@ app.post("/register", async (req, res) => {
   }
 });
 // Login Route
+
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
+  // console.log(email, password);
   try {
+    console.log("kuch bi");
+
     const user = await prisma.user.findUnique({ where: { email } });
+    console.log(user, "abcd");
+
     if (!user) return res.status(401).json({ error: "Invalid credentials" });
 
     const valid = await bcrypt.compare(password, user.password);
@@ -84,14 +90,18 @@ app.post("/login", async (req, res) => {
         useremail: user.email,
         role: user.role,
       },
-      NEXT_PUBLIC_JWT_SECRET,
+      JWT_SECRET,
       {
         expiresIn: "7d",
       }
     );
+
+    console.log(token);
+
     const refreshToken = jwt.sign({ userId: user.id }, JWT_SECRET, {
       expiresIn: "7d",
     });
+    console.log(refreshToken);
 
     res.json({ token, refreshToken });
   } catch (err) {
@@ -105,7 +115,7 @@ function authenticateToken(req, res, next) {
   const token = authHeader && authHeader.split(" ")[1];
   if (!token) return res.sendStatus(401);
 
-  jwt.verify(token, NEXT_PUBLIC_JWT_SECRET, (err, user) => {
+  jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) return res.sendStatus(403);
     // console.log("Decoded user:", user); // check if userId exists
 
@@ -122,16 +132,12 @@ app.post("/refresh-token", async (req, res) => {
     return res.status(401).json({ error: "No refresh token provided" });
 
   try {
-    const payload = jwt.verify(refreshToken, NEXT_PUBLIC_JWT_SECRET);
+    const payload = jwt.verify(refreshToken, JWT_SECRET);
 
     // Generate new access token
-    const newAccessToken = jwt.sign(
-      { userId: payload.userId },
-      NEXT_PUBLIC_JWT_SECRET,
-      {
-        expiresIn: "15m",
-      }
-    );
+    const newAccessToken = jwt.sign({ userId: payload.userId }, JWT_SECRET, {
+      expiresIn: "15m",
+    });
 
     res.json({ accessToken: newAccessToken });
   } catch (err) {
