@@ -1,14 +1,9 @@
-// prisma-serverless.js - simplified version
+// prisma-serverless.js
 import { PrismaClient } from "@prisma/client";
 
-// Create a new PrismaClient instance with explicit engine type
+// Create a simple PrismaClient instance WITHOUT engineType
 export const prisma = new PrismaClient({
-  engineType: "binary",
-  datasources: {
-    db: {
-      url: process.env.DATABASE_URL,
-    },
-  },
+  log: ["error"],
 });
 
 // Simple connection function

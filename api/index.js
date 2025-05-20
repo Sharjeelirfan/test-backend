@@ -11,9 +11,8 @@ const app = express();
 app.use(cors({}));
 app.use(express.json());
 
-const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-for-development";
-
 connectPrisma().catch(console.error);
+const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-for-development";
 
 // Add proper cleanup for serverless
 process.on("SIGINT", async () => {
@@ -41,21 +40,30 @@ app.get("/env-debug", (req, res) => {
 });
 
 // Add a debug route to check Prisma connection
+// Add this to your api/index.js
 app.get("/debug", async (req, res) => {
   try {
-    const count = await prisma.user.count();
+    // Test database connection
+    const userCount = await prisma.user.count();
+
     res.json({
-      status: "Database connection successful",
-      userCount: count,
-      nodeEnv: process.env.NODE_ENV,
-      DATABASE_URL: process.env.DATABASE_URL ? "Set (hidden)" : "Not set",
+      status: "OK",
+      databaseConnected: true,
+      userCount,
+      environment: {
+        nodeEnv: process.env.NODE_ENV || "not set",
+        databaseUrl: process.env.DATABASE_URL ? "set (hidden)" : "not set",
+        port: process.env.PORT || "not set",
+      },
+      prismaVersion: prisma._engineConfig.version,
     });
   } catch (error) {
-    console.error("Database connection error:", error);
+    console.error("Debug route error:", error);
     res.status(500).json({
-      error: "Database connection failed",
-      message: error.message,
+      status: "ERROR",
+      error: error.message,
       code: error.code,
+      meta: error.meta,
     });
   }
 });
