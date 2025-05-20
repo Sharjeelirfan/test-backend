@@ -285,5 +285,7 @@ app.get("/notes/private", authenticateToken, async (req, res) => {
     res.status(500).json({ error: "Failed to fetch private notes" });
   }
 });
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+module.exports = app;
+
+// const PORT = process.env.PORT || 4000;
+// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
