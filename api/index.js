@@ -1,27 +1,31 @@
+// api/index.js
 import express from "express";
 import cors from "cors";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs"; // Use only bcryptjs
 import jwt from "jsonwebtoken";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
-import { PrismaClient } from "@prisma/client";
+import { prisma, connectPrisma } from "../prisma-serverless.js"; // Import from our new file
 
 dotenv.config();
-const prisma = new PrismaClient();
 const app = express();
 app.use(cors({}));
 app.use(express.json());
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-for-development";
 
-// const loginLimiter = rateLimit({
-//   windowMs: 15 * 60 * 1000,
-//   max: 5,
-//   message: "Too many login attempts, please try again later.",
-// });
+// Initialize Prisma connection
+connectPrisma().catch(console.error);
 
-app.get("/", (req, res) => {
-  res.send("Hello from API");
+// Add proper cleanup for serverless
+process.on("SIGINT", async () => {
+  await prisma.$disconnect();
+  process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  await prisma.$disconnect();
+  process.exit(0);
 });
 
 // Register Route
@@ -67,16 +71,12 @@ app.post("/register", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-// Login Route
 
+// Login Route
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  // console.log(email, password);
   try {
-    // console.log("kuch bi");
-
     const user = await prisma.user.findUnique({ where: { email } });
-    // console.log(user, "abcd");
 
     if (!user) return res.status(401).json({ error: "Invalid credentials" });
 
@@ -96,12 +96,9 @@ app.post("/login", async (req, res) => {
       }
     );
 
-    // console.log(token);
-
     const refreshToken = jwt.sign({ userId: user.id }, JWT_SECRET, {
       expiresIn: "7d",
     });
-    // console.log(refreshToken);
 
     res.json({ token, refreshToken });
   } catch (err) {
@@ -117,7 +114,6 @@ function authenticateToken(req, res, next) {
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) return res.sendStatus(403);
-    // console.log("Decoded user:", user); // check if userId exists
 
     req.user = user;
     next();
@@ -261,7 +257,6 @@ app.get("/notes/public", async (req, res) => {
         visibility: "PUBLIC",
       },
     });
-    console.log(notes);
     res.json(notes);
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch public notes" });
@@ -271,7 +266,6 @@ app.get("/notes/public", async (req, res) => {
 // Get private notes for current user
 app.get("/notes/private", authenticateToken, async (req, res) => {
   try {
-    console.log("Decoded user in /notes/private:", req.user); // 👈 check this
     const notes = await prisma.note.findMany({
       where: {
         userId: req.user.userId,
@@ -285,7 +279,11 @@ app.get("/notes/private", authenticateToken, async (req, res) => {
     res.status(500).json({ error: "Failed to fetch private notes" });
   }
 });
-export default app;
 
-// const PORT = process.env.PORT || 4000;
-// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Start the server
+if (import.meta.url === import.meta.main) {
+  const PORT = process.env.PORT || 4000;
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+
+export default app;

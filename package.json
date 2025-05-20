@@ -1,24 +1,22 @@
 {
   "dependencies": {
     "@prisma/client": "^6.8.2",
-    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "express-rate-limit": "^7.5.0",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "prisma": "^6.8.2"
   },
   "name": "full-stack_practical_test_back-end",
   "version": "1.0.0",
   "main": "api/index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node --watch api/index.js",
-    "start": "node api/index.js",
-    "postinstall": "node prisma-generate.js",
-    "vercel-build": "prisma generate && prisma migrate deploy && next build"
+    "build": "npx prisma generate",
+    "start": "node api/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -27,7 +25,10 @@
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.9",
-    "nodemon": "^3.1.10",
-    "prisma": "^6.8.2"
+    "nodemon": "^3.1.10"
+  },
+
+  "engines": {
+    "node": "18.x"  
   }
 }
