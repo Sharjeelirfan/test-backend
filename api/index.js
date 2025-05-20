@@ -114,6 +114,8 @@ app.post("/register", async (req, res) => {
 // Login Route
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
+  // console.log(email, password);
+
   try {
     const user = await prisma.user.findUnique({ where: { email } });
 
@@ -326,3 +328,9 @@ if (import.meta.url === import.meta.main) {
 }
 
 export default app;
+
+const port = 4000;
+
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
