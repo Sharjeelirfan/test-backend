@@ -1,14 +1,4 @@
 {
-  "dependencies": {
-    "@prisma/client": "^6.8.2",
-    "bcryptjs": "^3.0.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.5.0",
-    "express": "^5.1.0",
-    "express-rate-limit": "^7.5.0",
-    "jsonwebtoken": "^9.0.2",
-    "prisma": "^6.8.2"
-  },
   "name": "full-stack_practical_test_back-end",
   "version": "1.0.0",
   "main": "api/index.js",
@@ -18,17 +8,26 @@
     "build": "npx prisma generate",
     "start": "node api/index.js"
   },
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "dependencies": {
+    "@prisma/client": "5.10.2",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
+    "jsonwebtoken": "^9.0.2",
+    "prisma": "5.10.2"
+  },
   "devDependencies": {
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.9",
     "nodemon": "^3.1.10"
   },
-
   "engines": {
-    "node": "18.x"  
-  }
+    "node": "18.x"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }

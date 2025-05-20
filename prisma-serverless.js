@@ -11,7 +11,7 @@ export const prisma =
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
-// Proper connection handling for serverless
+// Connection handling for serverless
 export async function connectPrisma() {
   try {
     await prisma.$connect();
@@ -19,6 +19,6 @@ export async function connectPrisma() {
     return prisma;
   } catch (error) {
     console.error("Failed to connect to database:", error);
-    process.exit(1);
+    return null;
   }
 }

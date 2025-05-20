@@ -5,12 +5,12 @@ import bcrypt from "bcryptjs"; // Use only bcryptjs
 import jwt from "jsonwebtoken";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
-import { prisma, connectPrisma } from "../prisma-serverless.js"; // Import from our new file
-
+import { prisma } from "../prisma-serverless.js";
 dotenv.config();
 const app = express();
 app.use(cors({}));
 app.use(express.json());
+const prisma = new PrismaClient();
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-for-development";
 
@@ -28,6 +28,29 @@ process.on("SIGTERM", async () => {
   process.exit(0);
 });
 
+app.get("/", (req, res) => {
+  res.send("API is running");
+});
+
+// Add a debug route to check Prisma connection
+app.get("/debug", async (req, res) => {
+  try {
+    const count = await prisma.user.count();
+    res.json({
+      status: "Database connection successful",
+      userCount: count,
+      nodeEnv: process.env.NODE_ENV,
+      databaseUrl: process.env.DATABASE_URL ? "Set (hidden)" : "Not set",
+    });
+  } catch (error) {
+    console.error("Database connection error:", error);
+    res.status(500).json({
+      error: "Database connection failed",
+      message: error.message,
+      code: error.code,
+    });
+  }
+});
 // Register Route
 app.post("/register", async (req, res) => {
   const { name, email, password, role } = req.body;
