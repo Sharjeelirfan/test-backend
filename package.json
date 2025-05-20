@@ -17,7 +17,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node --watch api/index.js",
     "start": "node api/index.js",
-    "postinstall": "prisma generate"
+    "postinstall": "npx prisma generate"
   },
   "author": "",
   "license": "ISC",
