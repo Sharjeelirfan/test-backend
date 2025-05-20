@@ -329,8 +329,8 @@ if (import.meta.url === import.meta.main) {
 
 export default app;
 
-const port = 4000;
+// const port = 4000;
 
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`Server is running on http://localhost:${port}`);
+// });

@@ -4,10 +4,9 @@
   "main": "api/index.js",
   "type": "module",
   "scripts": {
-    "postinstall": "prisma generate",
-    "build": "prisma generate && prisma migrate deploy",
-    "start": "node api/index.js",
-    "dev": "node --watch api/index.js"
+    "dev": "node --watch api/index.js",
+    "build": "npx prisma generate",
+    "start": "node api/index.js"
   },
   "dependencies": {
     "@prisma/client": "^5.10.2",
