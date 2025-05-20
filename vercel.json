@@ -6,9 +6,9 @@
       "use": "@vercel/node",
       "config": {
         "includeFiles": [
-          "node_modules/.prisma/**/*",
-          "node_modules/@prisma/**/*",
-          "prisma/**/*"
+          "node_modules/.prisma/client/libquery_engine-rhel-openssl-1.0.x.so.node",
+          "node_modules/@prisma/client/**/*",
+          "prisma/schema.prisma"
         ]
       }
     }
@@ -18,5 +18,10 @@
       "src": "/(.*)",
       "dest": "api/index.js"
     }
-  ]
+  ],
+  "build": {
+    "env": {
+      "PRISMA_GENERATE_SKIP_AUTOINSTALL": "true"
+    }
+  }
 }
