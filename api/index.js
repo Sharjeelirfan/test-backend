@@ -30,6 +30,16 @@ app.get("/", (req, res) => {
   res.send("API is running");
 });
 
+app.get("/env-debug", (req, res) => {
+  res.json({
+    nodeEnv: process.env.NODE_ENV || "not set",
+    vercel: process.env.VERCEL || "not set",
+    vercelEnv: process.env.VERCEL_ENV || "not set",
+    region: process.env.VERCEL_REGION || "not set",
+    DATABASE_URL: process.env.DATABASE_URL ? "set (hidden)" : "not set",
+  });
+});
+
 // Add a debug route to check Prisma connection
 app.get("/debug", async (req, res) => {
   try {
@@ -38,7 +48,7 @@ app.get("/debug", async (req, res) => {
       status: "Database connection successful",
       userCount: count,
       nodeEnv: process.env.NODE_ENV,
-      databaseUrl: process.env.DATABASE_URL ? "Set (hidden)" : "Not set",
+      DATABASE_URL: process.env.DATABASE_URL ? "Set (hidden)" : "Not set",
     });
   } catch (error) {
     console.error("Database connection error:", error);

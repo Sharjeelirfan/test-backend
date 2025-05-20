@@ -1,17 +1,17 @@
-// prisma-serverless.js
-import { PrismaClient } from "@prisma/client/edge";
+// prisma-serverless.js - simplified version
+import { PrismaClient } from "@prisma/client";
 
-// Prevent multiple instances in development
-const globalForPrisma = global;
-export const prisma =
-  globalForPrisma.prisma ||
-  new PrismaClient({
-    log: ["query", "info", "warn", "error"],
-  });
+// Create a new PrismaClient instance with explicit engine type
+export const prisma = new PrismaClient({
+  engineType: "binary",
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+    },
+  },
+});
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
-
-// Connection handling for serverless
+// Simple connection function
 export async function connectPrisma() {
   try {
     await prisma.$connect();
