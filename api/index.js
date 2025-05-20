@@ -5,16 +5,14 @@ import bcrypt from "bcryptjs"; // Use only bcryptjs
 import jwt from "jsonwebtoken";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
-import { prisma } from "../prisma-serverless.js";
+import { prisma, connectPrisma } from "../prisma-serverless.js";
 dotenv.config();
 const app = express();
 app.use(cors({}));
 app.use(express.json());
-const prisma = new PrismaClient();
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-for-development";
 
-// Initialize Prisma connection
 connectPrisma().catch(console.error);
 
 // Add proper cleanup for serverless
