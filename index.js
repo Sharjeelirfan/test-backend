@@ -101,7 +101,7 @@ app.post("/login", async (req, res) => {
     const refreshToken = jwt.sign({ userId: user.id }, JWT_SECRET, {
       expiresIn: "7d",
     });
-    console.log(refreshToken);
+    // console.log(refreshToken);
 
     res.json({ token, refreshToken });
   } catch (err) {
