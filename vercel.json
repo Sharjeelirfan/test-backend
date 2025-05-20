@@ -4,10 +4,7 @@
       "src": "api/index.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": [
-          "prisma/**/*",
-          "node_modules/.prisma/client/libquery_engine-rhel-openssl-1.0.x.so.node"
-        ]
+        "includeFiles": ["prisma/schema.prisma", ".env"]
       }
     }
   ],
