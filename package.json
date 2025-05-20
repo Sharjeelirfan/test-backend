@@ -11,11 +11,12 @@
   },
   "name": "full-stack_practical_test_back-end",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "api/index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --watch index.js"
+    "dev": "node --watch api/index.js",
+    "start": "node api/index.js"
   },
   "author": "",
   "license": "ISC",
